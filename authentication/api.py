@@ -20,3 +20,12 @@ class UserViewSet(viewsets.GenericViewSet):
 
         serializer.save()
         return response.Response(serializer.data, status=status.HTTP_200_OK)
+
+    @decorators.action(['POST'], detail=False)
+    def register(self, request):
+        """This endpoint handles the registration of the user"""
+        serializer = RegisterSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+
+        serializer.save()
+        return response.Response(serializer.data, status=status.HTTP_200_OK)
