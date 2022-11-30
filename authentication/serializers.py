@@ -5,9 +5,14 @@ from .models import User
 
 
 class LoginSerializer(serializers.ModelSerializer):
+    username = serializers.CharField(required=True)
+    password = serializers.CharField(required=True)
+    refresh = serializers.CharField(read_only=True)
+    access = serializers.CharField(read_only=True)
+
     class Meta:
         model = User
-        fields = ['username', 'password']
+        fields = ['username', 'password', 'refresh', 'access']
 
     def validate(self, attrs):
         username = attrs.get('username')
@@ -17,7 +22,7 @@ class LoginSerializer(serializers.ModelSerializer):
         try:
             user = User.objects.get(username=username)
             if user.check_password(password):
-                if user.is_verified:
+                if not user.is_verified:
                     tokens = RefreshToken.for_user(user)
                     attrs['refresh'] = str(tokens)
                     attrs['access'] = str(tokens.access_token)
@@ -32,15 +37,18 @@ class LoginSerializer(serializers.ModelSerializer):
             raise serializers.ValidationError(errors)
         return attrs
 
+    def save(self, **kwargs):
+        return self.data
+
 
 class RegisterSerializer(serializers.ModelSerializer):
     email = serializers.EmailField(required=True)
     password = serializers.CharField(write_only=True, required=True)
-    token = serializers.CharField(read_only=True)
+    username = serializers.CharField(required=True)
 
     class Meta:
         model = User
-        fields = ['username', 'email', 'password', 'token']
+        fields = ['username', 'email', 'password']
 
     def validate(self, attrs):
         username = attrs.get('username')
