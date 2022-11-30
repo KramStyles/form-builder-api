@@ -17,4 +17,5 @@ class User(AbstractUser, BaseModel):
     is_verified = models.BooleanField(default=False)
 
     def __str__(self):
-        return f"{self.first_name} {self.last_name}"
+        full_name = f"{self.first_name} {self.last_name}"
+        return full_name if full_name.strip() else self.username
