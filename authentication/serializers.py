@@ -22,12 +22,12 @@ class LoginSerializer(serializers.ModelSerializer):
         try:
             user = User.objects.get(username=username)
             if user.check_password(password):
-                if not user.is_verified:
-                    tokens = RefreshToken.for_user(user)
-                    attrs['refresh'] = str(tokens)
-                    attrs['access'] = str(tokens.access_token)
-                else:
-                    errors['inactive'] = 'Please verify your account'
+                # if not user.is_verified:
+                tokens = RefreshToken.for_user(user)
+                attrs['refresh'] = str(tokens)
+                attrs['access'] = str(tokens.access_token)
+                # else:
+                #     errors['inactive'] = 'Please verify your account'
             else:
                 errors['detail'] = 'Invalid authentication details'
         except User.DoesNotExist:
