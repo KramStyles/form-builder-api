@@ -1,4 +1,4 @@
-from rest_framework.permissions import BasePermission
+from rest_framework.permissions import BasePermission, IsAuthenticated
 
 from .models import User
 
@@ -6,7 +6,8 @@ from .models import User
 class FormBuilderPermissions(BasePermission):
     # This permission lets the user create and edit forms
     def has_permission(self, request, view):
-        return True
+        # This prevents a normal user from creating a form
+        return not bool(request.user.user_type == 'normal')
 
     def has_object_permission(self, request, view, obj):
         return True
@@ -15,7 +16,8 @@ class FormBuilderPermissions(BasePermission):
 class AdminPermissions(BasePermission):
     # This permission is for the admin which let's the user create both forms and fields
     def has_permission(self, request, view):
-        return True
+        # This allows only admins to perform a function like creating elements
+        return bool(request.user.user_type == 'admin')
 
     def has_object_permission(self, request, view, obj):
         return True
