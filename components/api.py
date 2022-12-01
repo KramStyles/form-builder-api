@@ -15,3 +15,10 @@ class FormsListCreateApiView(generics.ListCreateAPIView):
             # This allows authenticated users to view the forms but only form-builders can create forms
             return [permissions.IsAuthenticated()]
         return [permission() for permission in self.permission_classes]
+
+    def create(self, request, *args, **kwargs):
+        user = {'user': request.user}
+        serializer = self.serializer_class(data=request.data, context=user)
+        serializer.is_valid(True)
+        serializer.save()
+        return response.Response(serializer.data, status=status.HTTP_201_CREATED)
