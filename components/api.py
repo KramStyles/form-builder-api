@@ -31,6 +31,12 @@ class FormsEditApiView(generics.RetrieveUpdateDestroyAPIView):
     permission_classes = [permissions.IsAuthenticated, FormBuilderPermissions]
 
 
+class FetchFormsListAPIView(generics.ListAPIView):
+    """This endpoint displays the published forms to be filled by all users"""
+    queryset = Forms.objects.exclude(fields__isnull=True)
+    serializer_class = FormsSerializer
+
+
 class ElementListCreateAPIView(FormsListCreateApiView):
     """This endpoint creates and list elements. Elements are accessible to everyone but can
         only be created by the admin
@@ -52,3 +58,18 @@ class ElementEditAPIView(FormsEditApiView):
     """This endpoint is used to update and delete created elements by admins"""
     queryset = Elements.objects.all()
     serializer_class = ElementSerializer
+
+
+class DetailListCreateAPIView(generics.ListCreateAPIView):
+    serializer_class = DetailSerializer
+
+    def get_queryset(self):
+        details = Details.objects.all()
+        return details
+
+    def create(self, request, *args, **kwargs):
+        user = {'user': request.user}
+        serializer = self.serializer_class(data=request.data, context=user)
+        serializer.is_valid(True)
+        serializer.save()
+        return response.Response(serializer.data, status=status.HTTP_201_CREATED)

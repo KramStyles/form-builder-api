@@ -1,6 +1,6 @@
 from rest_framework import serializers
 
-from .models import Forms, Elements
+from .models import Forms, Elements, Details
 from authentication.models import User
 
 
@@ -45,3 +45,12 @@ class FormsSerializer(ElementSerializer):
 
         validated_data['message'] = 'ok'
         return validated_data
+
+
+class DetailSerializer(serializers.ModelSerializer):
+    user = AuthorSerializer()
+    form = FormsSerializer()
+
+    class Meta:
+        model = Details
+        fields = '__all__'
