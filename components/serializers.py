@@ -48,9 +48,28 @@ class FormsSerializer(ElementSerializer):
 
 
 class DetailSerializer(serializers.ModelSerializer):
-    user = AuthorSerializer()
-    form = FormsSerializer()
+    user = AuthorSerializer(read_only=True)
+    values = serializers.JSONField(required=True)
 
     class Meta:
         model = Details
         fields = '__all__'
+
+    def validate(self, attrs):
+        user = self.context.get('user')
+        # We check if the form has been filled by the user to prevent him from filling the same form again
+        form = attrs.get('form')
+        if Details.objects.filter(user=user, form=form):
+            raise serializers.ValidationError({'error': 'You have filled this form. Edit it instead!'})
+
+        attrs['user'] = user
+        return attrs
+
+    def create(self, validated_data):
+        try:
+            Details.objects.create(**validated_data)
+        except (TypeError, ValueError) as err:
+            raise serializers.ValidationError({'error': str(err)})
+        validated_data['message'] = 'Form Saved!'
+        return validated_data
+

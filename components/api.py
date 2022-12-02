@@ -61,10 +61,11 @@ class ElementEditAPIView(FormsEditApiView):
 
 
 class DetailListCreateAPIView(generics.ListCreateAPIView):
+    # This endpoint gets the forms filled by a user. It also lets a user fill a form the first time
     serializer_class = DetailSerializer
 
     def get_queryset(self):
-        details = Details.objects.all()
+        details = Details.objects.filter(user=self.request.user)
         return details
 
     def create(self, request, *args, **kwargs):
