@@ -75,7 +75,17 @@ class DetailSerializer(serializers.ModelSerializer):
 
 
 class DetailEditSerializer(DetailSerializer):
+    form_data = serializers.SerializerMethodField()
+
+    def get_form_data(self, obj):
+        data = {
+            'name': obj.form.name,
+            'desc': obj.form.description
+        }
+        return data
+
     def validate(self, attrs):
+        # This double checks to ensure only the owner can edit the form
         user = self.context.get('request').user
         owner = self.instance.user
         if user != owner:

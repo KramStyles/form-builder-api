@@ -6,7 +6,7 @@ from .models import User
 
 class LoginSerializer(serializers.ModelSerializer):
     username = serializers.CharField(required=True)
-    password = serializers.CharField(required=True)
+    password = serializers.CharField(required=True, write_only=True)
     refresh = serializers.CharField(read_only=True)
     access = serializers.CharField(read_only=True)
 
