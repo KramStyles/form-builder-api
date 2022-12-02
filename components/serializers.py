@@ -27,3 +27,7 @@ class FormsSerializer(serializers.ModelSerializer):
 
         validated_data['message'] = 'ok'
         return validated_data
+
+
+class FormEditSerializer(FormsSerializer):
+    pass

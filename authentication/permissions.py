@@ -10,7 +10,18 @@ class FormBuilderPermissions(BasePermission):
         return not bool(request.user.user_type == 'normal')
 
     def has_object_permission(self, request, view, obj):
-        return True
+        allow = False
+        try:
+            # Allows admin or owner of the object to make changes
+            if request.user.user_type == 'admin':
+                allow = True
+            else:
+                owner = obj.author
+                allow = bool(request.user == owner)
+        except AttributeError:
+            allow = False
+        finally:
+            return allow
 
 
 class AdminPermissions(BasePermission):

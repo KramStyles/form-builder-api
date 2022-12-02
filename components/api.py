@@ -22,3 +22,10 @@ class FormsListCreateApiView(generics.ListCreateAPIView):
         serializer.is_valid(True)
         serializer.save()
         return response.Response(serializer.data, status=status.HTTP_201_CREATED)
+
+
+class FormsEditApiView(generics.RetrieveUpdateDestroyAPIView):
+    """This endpoint is used to update and delete created forms by either the admin or the owner of the former"""
+    queryset = Forms.objects.all()
+    serializer_class = FormEditSerializer
+    permission_classes = [permissions.IsAuthenticated, FormBuilderPermissions]
