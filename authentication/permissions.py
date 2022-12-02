@@ -31,4 +31,4 @@ class AdminPermissions(BasePermission):
         return bool(request.user.user_type == 'admin')
 
     def has_object_permission(self, request, view, obj):
-        return True
+        return bool(request.user.user_type == 'admin')

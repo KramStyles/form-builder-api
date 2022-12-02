@@ -46,3 +46,9 @@ class ElementListCreateAPIView(FormsListCreateApiView):
         serializer.is_valid(True)
         serializer.save()
         return response.Response(serializer.data, status=status.HTTP_201_CREATED)
+
+
+class ElementEditAPIView(FormsEditApiView):
+    """This endpoint is used to update and delete created elements by admins"""
+    queryset = Elements.objects.all()
+    serializer_class = ElementSerializer
