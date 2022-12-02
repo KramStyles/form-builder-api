@@ -73,3 +73,11 @@ class DetailSerializer(serializers.ModelSerializer):
         validated_data['message'] = 'Form Saved!'
         return validated_data
 
+
+class DetailEditSerializer(DetailSerializer):
+    def validate(self, attrs):
+        user = self.context.get('request').user
+        owner = self.instance.user
+        if user != owner:
+            raise serializers.ValidationError({'error': "You don't have the permission to edit this form"})
+        return attrs

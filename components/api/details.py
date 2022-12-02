@@ -1,6 +1,7 @@
-from rest_framework import generics, response, status
+from rest_framework import generics, response, status, permissions
 
-from components.serializers import Details, DetailSerializer
+from components.serializers import Details, DetailSerializer, DetailEditSerializer
+from .forms import FormsEditApiView
 
 
 class DetailListCreateAPIView(generics.ListCreateAPIView):
@@ -17,3 +18,10 @@ class DetailListCreateAPIView(generics.ListCreateAPIView):
         serializer.is_valid(True)
         serializer.save()
         return response.Response(serializer.data, status=status.HTTP_201_CREATED)
+
+
+class DetailEditAPIView(FormsEditApiView):
+    """This endpoint is used to edit forms filled by users"""
+    queryset = Details.objects.all()
+    serializer_class = DetailEditSerializer
+    permission_classes = [permissions.IsAuthenticated]
