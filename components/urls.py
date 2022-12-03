@@ -7,9 +7,9 @@ from .api import (FormsListCreateApiView, FormsEditApiView, ElementListCreateAPI
 urlpatterns = [
     path('forms/', FormsListCreateApiView.as_view(), name='form-list'),
     path('elements/', ElementListCreateAPIView.as_view(), name='element-list'),
-    path('details/', DetailListCreateAPIView.as_view(), name='details-list'),
+    path('details/', DetailListCreateAPIView.as_view(), name='detail-list'),
 
-    path('forms/<int:pk>/', FormsEditApiView.as_view(), name='forms-edit'),
+    path('forms/<int:pk>/', FormsEditApiView.as_view(), name='form-edit'),
     path('elements/<int:pk>/', ElementEditAPIView.as_view(), name='element-edit'),
     path('details/<int:pk>/', DetailEditAPIView.as_view(), name='detail-edit'),
 
