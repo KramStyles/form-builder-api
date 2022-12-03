@@ -1,7 +1,5 @@
 from rest_framework.permissions import BasePermission, IsAuthenticated
 
-from .models import User
-
 
 class FormBuilderPermissions(BasePermission):
     # This permission lets the user create and edit forms
@@ -31,4 +29,4 @@ class AdminPermissions(BasePermission):
         return bool(request.user.user_type == 'admin')
 
     def has_object_permission(self, request, view, obj):
-        return True
+        return bool(request.user.user_type == 'admin')

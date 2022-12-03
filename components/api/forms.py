@@ -1,7 +1,9 @@
 from rest_framework import generics, response, status, permissions
 
-from authentication.permissions import AdminPermissions, FormBuilderPermissions
-from .serializers import *
+from authentication.permissions import FormBuilderPermissions
+
+
+from components.serializers import Forms, FormsSerializer
 
 
 class FormsListCreateApiView(generics.ListCreateAPIView):
@@ -31,18 +33,7 @@ class FormsEditApiView(generics.RetrieveUpdateDestroyAPIView):
     permission_classes = [permissions.IsAuthenticated, FormBuilderPermissions]
 
 
-class ElementListCreateAPIView(FormsListCreateApiView):
-    """This endpoint creates and list elements. Elements are accessible to everyone but can
-        only be created by the admin
-    """
-
-    queryset = Elements.objects.all()
-    serializer_class = ElementSerializer
-    permission_classes = [permissions.IsAuthenticated, AdminPermissions]
-
-    def create(self, request, *args, **kwargs):
-        user = {'user': request.user}
-        serializer = self.serializer_class(data=request.data, context=user)
-        serializer.is_valid(True)
-        serializer.save()
-        return response.Response(serializer.data, status=status.HTTP_201_CREATED)
+class FetchFormsListAPIView(generics.ListAPIView):
+    """This endpoint displays the published forms to be filled by all users"""
+    queryset = Forms.objects.exclude(fields__isnull=True)
+    serializer_class = FormsSerializer

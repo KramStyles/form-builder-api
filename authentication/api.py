@@ -1,6 +1,5 @@
 from rest_framework import viewsets, status, response, decorators, permissions
 
-from .models import User
 from .serializers import LoginSerializer, RegisterSerializer
 
 

@@ -6,7 +6,7 @@ from .models import User
 
 class LoginSerializer(serializers.ModelSerializer):
     username = serializers.CharField(required=True)
-    password = serializers.CharField(required=True)
+    password = serializers.CharField(required=True, write_only=True)
     refresh = serializers.CharField(read_only=True)
     access = serializers.CharField(read_only=True)
 
@@ -60,6 +60,8 @@ class RegisterSerializer(serializers.ModelSerializer):
             errors['username'] = 'User exists with this username'
         if User.objects.filter(email=email):
             errors['email'] = 'User exists with this email address'
+        if len(password) < 4:
+            errors['password'] = 'Your password is too short'
 
         if errors:
             raise serializers.ValidationError(errors)
@@ -71,7 +73,7 @@ class RegisterSerializer(serializers.ModelSerializer):
             user = User.objects.create(**validated_data)
             user.set_password(password)
             user.save()
-        except:
-            raise serializers.ValidationError('problem')
+        except (TypeError, AttributeError) as err:
+            raise serializers.ValidationError({'error': str(err)})
 
         return user

@@ -21,5 +21,5 @@ class Elements(models.Model):
 
 class Details(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
-    Form = models.ForeignKey(Forms, on_delete=models.CASCADE)
+    form = models.ForeignKey(Forms, on_delete=models.CASCADE)
     values = models.JSONField(null=True)
