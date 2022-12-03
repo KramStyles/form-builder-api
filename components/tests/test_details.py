@@ -3,7 +3,7 @@ import json
 from django.shortcuts import reverse
 from rest_framework.test import APITestCase
 
-from components.factories import DetailsFactory, ElementsFactory, FormsFactory
+from components.factories import DetailsFactory, FormsFactory
 from authentication.factories import UserFactory, AdminFactory
 
 

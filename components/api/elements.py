@@ -28,4 +28,3 @@ class ElementEditAPIView(FormsEditApiView):
     """This endpoint is used to update and delete created elements by admins"""
     queryset = Elements.objects.all()
     serializer_class = ElementSerializer
-

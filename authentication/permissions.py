@@ -1,7 +1,5 @@
 from rest_framework.permissions import BasePermission, IsAuthenticated
 
-from .models import User
-
 
 class FormBuilderPermissions(BasePermission):
     # This permission lets the user create and edit forms

@@ -37,4 +37,3 @@ class FetchFormsListAPIView(generics.ListAPIView):
     """This endpoint displays the published forms to be filled by all users"""
     queryset = Forms.objects.exclude(fields__isnull=True)
     serializer_class = FormsSerializer
-
