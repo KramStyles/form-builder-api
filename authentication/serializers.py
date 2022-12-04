@@ -21,14 +21,7 @@ class LoginSerializer(serializers.ModelSerializer):
 
         try:
             user = User.objects.get(username=username)
-            if user.check_password(password):
-                # if not user.is_verified:
-                tokens = RefreshToken.for_user(user)
-                attrs['refresh'] = str(tokens)
-                attrs['access'] = str(tokens.access_token)
-                # else:
-                #     errors['inactive'] = 'Please verify your account'
-            else:
+            if not user.check_password(password):
                 errors['detail'] = 'Invalid authentication details'
         except User.DoesNotExist:
             errors['username'] = "User not found"
@@ -37,8 +30,12 @@ class LoginSerializer(serializers.ModelSerializer):
             raise serializers.ValidationError(errors)
         return attrs
 
-    def save(self, **kwargs):
-        return self.data
+    def create(self, validated_data):
+        user = User.objects.get(username=validated_data['username'])
+        tokens = RefreshToken.for_user(user)
+        validated_data['refresh'] = str(tokens)
+        validated_data['access'] = str(tokens.access_token)
+        return validated_data
 
 
 class RegisterSerializer(serializers.ModelSerializer):

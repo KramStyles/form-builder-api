@@ -14,8 +14,7 @@ class Forms(models.Model):
 
 
 class Elements(models.Model):
-    name = models.CharField(max_length=100)
-    label = models.CharField(max_length=100, null=True)
+    name = models.CharField(max_length=100, unique=True)
     author = models.ForeignKey(User, on_delete=models.CASCADE)
 
 
