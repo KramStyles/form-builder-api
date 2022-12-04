@@ -38,11 +38,11 @@ class TestDetails(APITestCase):
 
     def test_to_fill_a_form_without_value(self):
         self.client.force_authenticate(self.admin)
-        response = self.client.post(reverse('detail-list'), data=self.data)
+        response = self.client.post(reverse('detail-list'), data={})
         content = json.loads(response.content)
 
         self.assertTrue(response.status_code, 400)
-        self.assertEqual('This field is required.', content.get('values')[0])
+        self.assertEqual('This field is required.', content.get('form')[0])
 
     def test_to_fill_a_form_successfully(self):
         with self.subTest('Test to fill a form'):

@@ -11,7 +11,6 @@ class AuthorSerializer(serializers.ModelSerializer):
 
 
 class ElementSerializer(serializers.ModelSerializer):
-    name = serializers.CharField(required=True)
     author = AuthorSerializer(read_only=True)
 
     class Meta:
@@ -20,16 +19,7 @@ class ElementSerializer(serializers.ModelSerializer):
 
     def create(self, validated_data):
         validated_data['author'] = self.context.get('user')
-        element_name = validated_data.get('name')
-        if Elements.objects.filter(name=element_name):
-            raise serializers.ValidationError({'error': f'{element_name} has already been created!'})
-        try:
-            Elements.objects.create(**validated_data)
-        except TypeError as err:
-            raise serializers.ValidationError({'error': str(err)})
-
-        validated_data['message'] = 'ok'
-        return validated_data
+        return super().create(validated_data)
 
 
 class FormsSerializer(ElementSerializer):
@@ -38,18 +28,11 @@ class FormsSerializer(ElementSerializer):
 
     def create(self, validated_data):
         validated_data['author'] = self.context.get('user')
-        try:
-            Forms.objects.create(**validated_data)
-        except TypeError as err:
-            raise serializers.ValidationError({'error': str(err)})
-
-        validated_data['message'] = 'ok'
-        return validated_data
+        return super().create(validated_data)
 
 
 class DetailSerializer(serializers.ModelSerializer):
     user = AuthorSerializer(read_only=True)
-    values = serializers.JSONField(required=True)
 
     class Meta:
         model = Details
@@ -59,6 +42,9 @@ class DetailSerializer(serializers.ModelSerializer):
         user = self.context.get('user')
         # We check if the form has been filled by the user to prevent him from filling the same form again
         form = attrs.get('form')
+        if len(form.fields) != len(attrs.get('values')):
+            raise serializers.ValidationError({'error': "Values don't match. Something is wrong"})
+
         if Details.objects.filter(user=user, form=form):
             raise serializers.ValidationError({'error': 'You have filled this form. Edit it instead!'})
 
