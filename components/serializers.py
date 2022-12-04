@@ -42,11 +42,11 @@ class DetailSerializer(serializers.ModelSerializer):
         user = self.context.get('user')
         # We check if the form has been filled by the user to prevent him from filling the same form again
         form = attrs.get('form')
-        if len(form.fields) != len(attrs.get('values')):
-            raise serializers.ValidationError({'error': "Values don't match. Something is wrong"})
-
         if Details.objects.filter(user=user, form=form):
             raise serializers.ValidationError({'error': 'You have filled this form. Edit it instead!'})
+
+        if form.fields and (len(form.fields) != len(attrs.get('values'))):
+            raise serializers.ValidationError({'error': "Values don't match. Something is wrong"})
 
         attrs['user'] = user
         return attrs
